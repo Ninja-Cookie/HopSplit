@@ -142,6 +142,8 @@ namespace HopSplit.UI
             style.fontSize  = textSize;
             style.fontStyle = FontStyle.Bold;
 
+            style.wordWrap = false;
+
             return style;
         }
 

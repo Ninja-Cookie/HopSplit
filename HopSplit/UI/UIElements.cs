@@ -12,8 +12,8 @@ namespace HopSplit.UI
         private const float _elementTextSize    = 16;
 
         internal static int ElementMargin   => (int)(_elementMargin     * RectData.Scale.y);
-        internal static int ElementHeight   => (int)(_elementHeight     * RectData.Scale.y);
-        internal static int ElementTextSize => (int)((_elementTextSize  * RectData.Scale.y) - (_elementHeight * 0.1f));
+        internal static int ElementHeight   => (int)(_elementHeight     * RectData.Scale.y * 1.2f);
+        internal static int ElementTextSize => (int)(_elementTextSize   * RectData.Scale.y);
 
         internal readonly static Dictionary<int, ElementData> Elements = new Dictionary<int, ElementData>();
 
@@ -27,7 +27,7 @@ namespace HopSplit.UI
 
         internal static bool Checkbox(int id, ref int elementID, bool state, string text, TextAnchor textAnchor, Color? color = null)
         {
-            var element = BuildElement(id, elementID++, StyleTypes.Checkbox, color ?? UIColors.ElementBackgroundOn, Color.white, true, text, textAnchor);
+            var element = BuildElement(id, elementID++, StyleTypes.Checkbox, color ?? UIColors.ElementBackgroundOn, Color.white, true, text, textAnchor, ElementTextSize);
             element.Text = text;
 
             return GUI.Toggle(element.RectData.Rect, state, element.Text, element.GetStyle(!state, UIColors.ElementBackgroundOff));
@@ -35,7 +35,7 @@ namespace HopSplit.UI
 
         internal static bool Button(int id, ref int elementID, string text, TextAnchor textAnchor, Color? color = null, bool toggleState = false)
         {
-            var element = BuildElement(id, elementID++, StyleTypes.Button, color ?? UIColors.ElementBackgroundOn, Color.white, true, text, textAnchor);
+            var element = BuildElement(id, elementID++, StyleTypes.Button, color ?? UIColors.ElementBackgroundOn, Color.white, true, text, textAnchor, ElementTextSize);
             element.Text = text;
 
             return GUI.Button(element.RectData.Rect, element.Text, element.GetStyle(!toggleState, UIColors.ElementBackgroundOff));

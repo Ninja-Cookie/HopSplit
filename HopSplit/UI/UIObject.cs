@@ -7,10 +7,7 @@ namespace HopSplit.UI
         internal void Update()
         {
             if (Input.GetKeyDown(KeyCode.F1))
-            {
-                UIHandler.Windows[UIHandler.WindowTypes.Main].State = !UIHandler.Windows[0].State;
-                Debug.LogError(UIHandler.Windows[UIHandler.WindowTypes.Main].State);
-            }
+                UIHandler.Windows[UIHandler.WindowTypes.Main].State = !UIHandler.Windows[UIHandler.WindowTypes.Main].State;
         }
 
         internal void OnGUI()
