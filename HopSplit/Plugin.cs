@@ -12,7 +12,7 @@ namespace HopSplit
     {
         public const string pluginGuid      = "ninjacookie.hops.hopsplit";
         public const string pluginName      = "Hop Split";
-        public const string pluginVersion   = "1.0.0";
+        public const string pluginVersion   = "1.0.1";
 
         public void Awake()
         {
