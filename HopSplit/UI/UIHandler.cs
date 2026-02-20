@@ -15,7 +15,7 @@ namespace HopSplit.UI
 
         internal class RectData
         {
-            private     static Vector2 BaseResolution   =   new Vector2(1920f, 1080f);
+            internal    static Vector2 BaseResolution   =   new Vector2(1920f, 1080f);
             internal    static Vector2 Scale            =>  new Vector2(SingletonPropertyItem<SettingsManager>.Instance?.Resolution.width ?? Screen.width, SingletonPropertyItem<SettingsManager>.Instance?.Resolution.height ?? Screen.height) / BaseResolution;
 
             internal Vector2Int Position    { get; }
@@ -87,22 +87,25 @@ namespace HopSplit.UI
             internal ElementData        ElementData { get; }
             internal bool               State       { get; set; } = false;
 
-            internal WindowData(int id, GUI.WindowFunction function, ElementData elementData)
+            internal WindowData(int id, GUI.WindowFunction function, ElementData elementData, bool state = false)
             {
                 this.ID             = id;
                 this.Function       = function;
                 this.ElementData    = elementData;
+                this.State          = state;
             }
         }
 
         internal enum WindowTypes
         {
-            Main = 0
+            Main = 0,
+            FPS = 1
         }
 
         internal readonly static Dictionary<WindowTypes, WindowData> Windows = new Dictionary<WindowTypes, WindowData>()
         {
-            { WindowTypes.Main, new WindowData((int)WindowTypes.Main, UIWindows.Main, new ElementData(StyleTypes.Box, new Color(0.00f, 0.09f, 0.16f, 0.75f), null, false, new RectData(new Vector2Int(5, 5), new Vector2Int(300, 300), true))) }
+            { WindowTypes.Main, new WindowData((int)WindowTypes.Main,   UIWindows.Main, new ElementData(StyleTypes.Box, UIColors.WindowBackground, null, false, new RectData(new Vector2Int(5, 5), new Vector2Int(300, 300), true))) },
+            { WindowTypes.FPS,  new WindowData((int)WindowTypes.FPS,    UIWindows.FPS,  new ElementData(StyleTypes.Box, null, null, false, new RectData(Vector2Int.zero, Vector2Int.RoundToInt(RectData.BaseResolution), true)), true) }
         };
 
         private static Texture2D GenerateTexture(Color color, float alpha = 1f)

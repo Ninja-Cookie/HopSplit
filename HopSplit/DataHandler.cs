@@ -67,9 +67,13 @@ namespace HopSplit
             [DataMember]
             internal bool ForceSyncTime = false;
 
-            internal Data_Settings(bool forceSyncTime)
+            [DataMember]
+            internal bool DisplayFPS = true;
+
+            internal Data_Settings(bool forceSyncTime, bool displayFPS)
             {
-                ForceSyncTime = forceSyncTime;
+                ForceSyncTime   = forceSyncTime;
+                DisplayFPS      = displayFPS;
             }
         }
 
@@ -110,7 +114,7 @@ namespace HopSplit
 
         private static void SaveSettings()
         {
-            SaveData(new Data_Settings(ConfigHandler.ForceSyncTime), PATH_FullPath_Settings);
+            SaveData(new Data_Settings(ConfigHandler.ForceSyncTime, ConfigHandler.DisplayFPS), PATH_FullPath_Settings);
         }
 
         internal static void LoadAll()
@@ -159,6 +163,7 @@ namespace HopSplit
                 return;
 
             ConfigHandler.ForceSyncTime = settingsData.ForceSyncTime;
+            ConfigHandler.DisplayFPS    = settingsData.DisplayFPS;
         }
     }
 }

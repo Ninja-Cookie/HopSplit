@@ -6,6 +6,7 @@ namespace HopSplit.UI
     internal static class UIWindows
     {
         private static int MainChain = 0;
+        private static int FpsChain = 0;
 
         internal static void Main(int id)
         {
@@ -17,8 +18,16 @@ namespace HopSplit.UI
 
             UIElements.EmptySpace(id, ref MainChain);
 
+            UIFunctions.ToggleFPSDisplay(UIElements.Button(id, ref MainChain, ConfigHandler.DisplayFPS ? "Hide FPS" : "Show FPS", UnityEngine.TextAnchor.MiddleCenter, UIColors.ElementBackgroundOnAlt, ConfigHandler.DisplayFPS));
             UIFunctions.ToggleForceSyncTime(UIElements.Button(id, ref MainChain, ConfigHandler.ForceSyncTime ? "Disable Syncing to In-Game Display Time" : "Force Sync to In-Game Display Time", UnityEngine.TextAnchor.MiddleCenter, UIColors.ElementBackgroundOnAlt, ConfigHandler.ForceSyncTime));
             UIFunctions.ToggleConnectionLiveSplit(UIElements.Button(id, ref MainChain, LiveSplit.ConnectionManager.IsConnected ? "Disconnect LiveSplit" : "Connect LiveSplit", UnityEngine.TextAnchor.MiddleCenter, UIColors.ElementBackgroundOnAlt, LiveSplit.ConnectionManager.IsConnected));
+        }
+
+        internal static void FPS(int id)
+        {
+            FpsChain = 0;
+
+            UIElements.Label(id, ref FpsChain, UIObject.FPS.ToString("#"), TextAnchor.UpperRight, size: 30, heightOverride: 100);
         }
     }
 }

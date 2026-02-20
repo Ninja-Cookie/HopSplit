@@ -19,9 +19,10 @@ namespace HopSplit
             var harmony = new Harmony(pluginGuid);
             harmony.PatchAll();
 
+            DataHandler.LoadAll();
+
             LiveSplit.LiveSplitManager.Connect();
             UIHandler.CreateUIObject();
-            DataHandler.LoadAll();
         }
     }
 }

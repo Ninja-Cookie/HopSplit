@@ -11,6 +11,7 @@ namespace HopSplit
     {
         internal readonly static Dictionary<string, bool> ActiveSplits = new Dictionary<string, bool>();
         internal static bool ForceSyncTime = false;
+        internal static bool DisplayFPS = true;
 
         internal static void InitSplits(GoalData[] goalData)
         {

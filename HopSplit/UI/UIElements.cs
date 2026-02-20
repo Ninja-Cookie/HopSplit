@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using UnityEngine;
 using static HopSplit.UI.UIHandler;
@@ -15,11 +16,11 @@ namespace HopSplit.UI
         internal static int ElementHeight   => (int)(_elementHeight     * RectData.Scale.y * 1.2f);
         internal static int ElementTextSize => (int)(_elementTextSize   * RectData.Scale.y);
 
-        internal readonly static Dictionary<int, ElementData> Elements = new Dictionary<int, ElementData>();
+        internal readonly static Dictionary<(int, int), ElementData> Elements = new Dictionary<(int, int), ElementData>();
 
-        internal static void Label(int id, ref int elementID, string text, TextAnchor textAnchor, Color? color = null)
+        internal static void Label(int id, ref int elementID, string text, TextAnchor textAnchor, Color? color = null, int? size = null, int? heightOverride = null)
         {
-            var element = BuildElement(id, elementID++, StyleTypes.Label, null, color, false, text, textAnchor, ElementTextSize);
+            var element = BuildElement(id, elementID++, StyleTypes.Label, null, color, false, text, textAnchor, size ?? ElementTextSize, heightOverride);
             element.Text = text;
 
             GUI.Label(element.RectData.Rect, element.Text, element.GetStyle());
@@ -46,22 +47,27 @@ namespace HopSplit.UI
             BuildElement(id, elementID++, StyleTypes.Box);
         }
 
-        private static ElementData BuildElement(int id, int elementID, StyleTypes styleType, Color? background = null, Color? foreground = null, bool dynamicColor = true, string text = null, TextAnchor textAnchor = TextAnchor.MiddleCenter, int textSize = 12)
+        private static ElementData BuildElement(int id, int elementID, StyleTypes styleType, Color? background = null, Color? foreground = null, bool dynamicColor = true, string text = null, TextAnchor textAnchor = TextAnchor.MiddleCenter, int textSize = 12, int? heightOverride = null)
         {
-            if (Elements.TryGetValue(elementID, out var value))
+            if (Elements.TryGetValue((id, elementID), out var value))
                 return value;
+
+            int totalElements = Elements.Keys.Where(z => z.Item1 == id).Count();
 
             var windowRect = Windows[(WindowTypes)id].ElementData.RectData.Rect;
 
-            int x = ElementMargin;
-            int y = (Elements.Count * ElementHeight) + (Elements.Count * ElementMargin) + ElementMargin;
+            int height = heightOverride ?? ElementHeight;
 
-            RectData    rect    = new RectData(new Vector2Int(x, y), new Vector2Int((int)windowRect.size.x - (ElementMargin * 2), ElementHeight));
+            int x = ElementMargin;
+            int y = (totalElements * height) + (totalElements * ElementMargin) + ElementMargin;
+
+            RectData    rect    = new RectData(new Vector2Int(x, y), new Vector2Int((int)windowRect.size.x - (ElementMargin * 2), height));
             ElementData element = new ElementData(StyleTypes.Label, background ?? Color.clear, foreground ?? Color.white, dynamicColor, rect, text, textAnchor, textSize);
 
-            Elements.Add(elementID, element);
+            Elements.Add((id, elementID), element);
+            totalElements++;
 
-            Windows[(WindowTypes)id].ElementData.RectData.Rect.height = (Elements.Count * ElementHeight) + (Elements.Count * ElementMargin) + ElementMargin;
+            Windows[(WindowTypes)id].ElementData.RectData.Rect.height = (totalElements * height) + (totalElements * ElementMargin) + ElementMargin;
 
             return element;
         }

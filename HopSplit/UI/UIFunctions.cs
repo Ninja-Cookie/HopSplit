@@ -27,5 +27,14 @@ namespace HopSplit.UI
                     LiveSplit.ConnectionManager.StartSyncingToGame();
             }
         }
+
+        internal static void ToggleFPSDisplay(bool state)
+        {
+            if (state)
+            {
+                UIHandler.Windows[UIHandler.WindowTypes.FPS].State = ConfigHandler.DisplayFPS = !ConfigHandler.DisplayFPS;
+                DataHandler.Save();
+            }
+        }
     }
 }
