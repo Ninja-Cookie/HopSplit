@@ -9,6 +9,7 @@
 - Automatic Splitting
 - Adjustable Split Settings
 - Ability to Sync with Big Hops Built-In Real-Time Speedrun Timer
+- In-Game FPS Display
 
 ## Installation
 #### (If BepInEx is installed, you can skip to Step 4)
