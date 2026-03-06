@@ -42,23 +42,21 @@ namespace HopSplit.Patches
             }
         }
 
-        // Loading has started
-        [HarmonyPatch(typeof(LoadManager), "StartLoading")]
-        public static class Patch_LoadManager_StartLoading
+        // Loading state changed
+        [HarmonyPatch(typeof(LoadManager), "SetIsLoading")]
+        public static class Patch_LoadManager_SetIsLoading
         {
-            public static void Prefix()
+            public static void Prefix(bool loading)
             {
-                if (!ConfigHandler.ForceSyncTime)
+                if (!ConfigHandler.ForceSyncTime && loading)
                     LiveSplit.ConnectionManager.StartPausingTimer();
             }
-        }
 
-        // Loading has ended
-        [HarmonyPatch(typeof(LoadManager), "FinishLoading")]
-        public static class Patch_LoadManager_FinishLoading
-        {
-            public static void Postfix()
+            public static void Postfix(bool ___isLoading)
             {
+                if (___isLoading)
+                    return;
+
                 LiveSplit.ConnectionManager.StartUnpausingTimer();
                 if (ConfigHandler.ForceSyncTime)
                     LiveSplit.ConnectionManager.StartSyncingToGame();
