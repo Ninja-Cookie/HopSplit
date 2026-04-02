@@ -18,7 +18,10 @@ namespace HopSplit.Patches
             public static void Prefix(WorldState loadWorldState)
             {
                 if (loadWorldState == null)
+                {
                     LiveSplit.ConnectionManager.StartingNewGame = true;
+                    return;
+                }
             }
         }
 
@@ -26,19 +29,30 @@ namespace HopSplit.Patches
         [HarmonyPatch(typeof(SpeedrunManager), "AddSplit")]
         public static class Patch_SpeedrunManager_AddSplit
         {
+            public static bool AllowSplit = false;
+
+            public static void Prefix(SpeedrunManager.SpeedrunSplit split, List<SpeedrunManager.SpeedrunSplit> ___splits)
+            {
+                var worldState = SingletonPropertyItem<SaveManager>.Instance?.WorldState;
+                List<GoalData> currentFileGoals = new List<GoalData>();
+                worldState?.GetCompletedGoals(ref currentFileGoals);
+
+                AllowSplit = !currentFileGoals.Contains(split.goal) && ___splits?.FirstOrDefault(x => x.goal == split.goal) == null;
+            }
+
             public static void Postfix(bool __result, SpeedrunManager.SpeedrunSplit split, List<SpeedrunManager.SpeedrunSplit> ___splits)
             {
-                if (__result && ConfigHandler.ActiveSplits.TryGetValue(split.goal.name, out var shouldSplit) && shouldSplit)
-                {
-                    if (ConfigHandler.ForceSyncTime)
-                    {
-                        var finalSplit = ___splits.FirstOrDefault(x => x.goal == split.goal);
-                        if (finalSplit != null)
-                            LiveSplit.ConnectionManager.StartSettingGameTime(TimeSpan.FromSeconds(finalSplit.absoluteTime));
-                    }
+                if (!AllowSplit || !__result || !ConfigHandler.ActiveSplits.TryGetValue(split.goal.name, out var shouldSplit) || !shouldSplit)
+                    return;
 
-                    LiveSplit.ConnectionManager.StartSplit();
+                if (ConfigHandler.ForceSyncTime)
+                {
+                    var finalSplit = ___splits.FirstOrDefault(x => x.goal == split.goal);
+                    if (finalSplit != null)
+                        LiveSplit.ConnectionManager.StartSettingGameTime(TimeSpan.FromSeconds(finalSplit.absoluteTime));
                 }
+
+                LiveSplit.ConnectionManager.StartSplit();
             }
         }
 
